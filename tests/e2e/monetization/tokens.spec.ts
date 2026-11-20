@@ -1,5 +1,4 @@
-
-import {test,  expect } from '@playwright/test';
+import { test, expect } from '../../../src/fixtures/authFixture';
 import { TokenPurchasePage } from '../../../src/pages/TokenPurchasePage';
 
 const starterPack = {
@@ -22,7 +21,7 @@ async function tokenBalanceOf(client: {
 }
 
 test.describe('Token purchase (P0)', () => {
-  test('TC_TOKN_001 successful credit addition', async ({ page, testUser }) => {
+  test('TC_TOKN_001 successful credit addition', async ({ authedPage, testUser }) => {
     const before = await tokenBalanceOf(testUser.client);
     const tokensPage = new TokenPurchasePage(authedPage);
 
