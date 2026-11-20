@@ -1,5 +1,6 @@
 // src/utils/globalSetup.ts
 import { FullConfig } from '@playwright/test';
+import { ensureAccountPool } from '../api/accountPool';
 
 async function globalSetup(_config: FullConfig) {
   const healthUrl = 'https://minerva-mentorship.pages.dev/api/health';
@@ -14,6 +15,7 @@ async function globalSetup(_config: FullConfig) {
       
       if (response.ok) {
         console.log(`✅ Backend is awake and healthy! (Attempt ${attempt})`);
+        await ensureAccountPool();
         return;
       }
       
