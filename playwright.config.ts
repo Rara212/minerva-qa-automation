@@ -17,10 +17,15 @@ export default defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* One local retry absorbs transient network errors (e.g. ERR_CONNECTION_RESET);
+     CI gets two. */
+  retries: process.env.CI ? 2 : 1,
+  /* Opt out of parallel tests on CI. Cap local workers: every worker registers
+     an account at startup and the backend rate-limits auth bursts (~6/window). */
+  workers: process.env.CI ? 1 : 4,
+  /* Render free tier can be slow (argon2 + cold Mongo); allow extra headroom. */
+  timeout: 60_000,
+  expect: { timeout: 15_000 },
   // 👈 Register the global setup here so it runs before any tests start
   globalSetup: require.resolve('./src/utils/globalSetup.ts'),
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */

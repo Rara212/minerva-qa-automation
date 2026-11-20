@@ -38,7 +38,7 @@ Focus on initializing the foundational Page Object Models (POM), dynamic API dat
   - `TC_AUTH_003`: Terms of Service requirement validation.
   - `TC_AUTH_004` – `TC_AUTH_006`: Password complexity, refresh resilience, and boundary inputs.
 - [ ] **Token Purchase Suite (`tests/e2e/monetization/tokens.spec.ts`):**
-  - `TC_TOKN_001` – `TC_TOKN_003`: Successful credit additions, card decline error handling, and webhook integration drops.
+  - `TC_TOKN_001` – `TC_TOKN_003`: Successful credit additions, short card number (<16 digits) validation, and webhook integration drops.
 
 ---
 

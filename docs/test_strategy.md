@@ -65,7 +65,7 @@ Manual testing is reserved for non-deterministic AI media features and browser p
 | Test Case ID | Feature / Module | Test Scenario Description | Type | Priority | Execution | Target Automation Layer |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **TC_TOKN_001** | Buying Token | Focus pack payment and credit verification | Positive | High | Automation | E2E / API Webhook |
-| **TC_TOKN_002** | Buying Token | Declined card handling & error toast check | Negative | High | Automation | API Mock / E2E UI |
+| **TC_TOKN_002** | Buying Token | Short card number (&lt;16 digits) validation & error toast check | Negative | High | Automation | E2E UI |
 | **TC_TOKN_003** | Buying Token | Network drop/timeout during webhook retry | Edge | High | Automation | API Integration |
 | **TC_LOG_001** | Login & Auth | Valid credentials login & clean session logout | Positive | High | Automation | E2E Web |
 | **TC_LOG_002** | Login & Auth | Invalid credentials reject & lockout threshold | Negative | High | Automation | E2E / API |
