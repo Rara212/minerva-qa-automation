@@ -1,33 +1,48 @@
-// src/utils/globalSetup.ts
-import { FullConfig } from '@playwright/test';
+import type { FullConfig } from '@playwright/test';
+import { ensureAccountPool } from '../api/accountPool';
+import { APP_ORIGIN } from '../api/AuthClient';
 
-async function globalSetup(_config: FullConfig) {
-  const healthUrl = 'https://minerva-mentorship.pages.dev/api/health';
+async function globalSetup(_config: FullConfig): Promise<void> {
+  const healthUrl = `${APP_ORIGIN}/api/health`;
   const maxRetries = 10;
-  const retryIntervalMs = 8000; // Wait 8 seconds between retries
+  const retryIntervalMs = 8_000;
 
-  console.log('🌍 Checking Render backend status (handling potential cold start)...');
+  console.info('Checking the application health endpoint...');
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    let response: Response;
     try {
-      const response = await fetch(healthUrl, { method: 'GET' });
-      
-      if (response.ok) {
-        console.log(`✅ Backend is awake and healthy! (Attempt ${attempt})`);
-        return;
-      }
-      
-      console.log(`⚠️ Backend responded with status ${response.status}. Retrying in ${retryIntervalMs / 1000}s... (Attempt ${attempt}/${maxRetries})`);
+      response = await fetch(healthUrl, {
+        method: 'GET',
+        signal: AbortSignal.timeout(10_000),
+      });
     } catch (error) {
-      console.log(`💤 Backend is sleeping (cold start). Retrying in ${retryIntervalMs / 1000}s... (Attempt ${attempt}/${maxRetries})`, error instanceof Error ? error.message : '');
+      console.info(
+        `Health check failed; retrying in ${retryIntervalMs / 1000}s (attempt ${attempt}/${maxRetries}):`,
+        error
+      );
+      if (attempt < maxRetries) {
+        await new Promise((resolve) => setTimeout(resolve, retryIntervalMs));
+      }
+      continue;
     }
+
+    if (response.ok) {
+      console.info(`Application is healthy (attempt ${attempt}).`);
+      await ensureAccountPool();
+      return;
+    }
+
+    console.info(
+      `Health endpoint returned ${response.status}; retrying in ${retryIntervalMs / 1000}s (attempt ${attempt}/${maxRetries}).`
+    );
 
     if (attempt < maxRetries) {
       await new Promise((resolve) => setTimeout(resolve, retryIntervalMs));
     }
   }
 
-  throw new Error(`❌ Failed to wake up the Render backend at ${healthUrl} after ${maxRetries} attempts.`);
+  throw new Error(`Application health check failed at ${healthUrl} after ${maxRetries} attempts.`);
 }
 
 export default globalSetup;

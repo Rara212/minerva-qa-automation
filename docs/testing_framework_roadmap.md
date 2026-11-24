@@ -18,15 +18,18 @@ This document provides a structured, phase-by-phase engineering roadmap for buil
 Focus on initializing the foundational Page Object Models (POM), dynamic API data helpers, and high-priority regression tests.
 
 ### 2.1 API Helpers & Setup/Teardown Hooks
+
 - [ ] Create `src/api/AuthClient.ts` to handle dynamic user registration, token generation, and account cleanup.
 - [ ] Implement Playwright custom fixtures (`src/fixtures/authFixture.ts`) to inject valid user auth states into test contexts without repetitive UI log-ins.
 
 ### 2.2 Page Object Models (POM)
+
 - [ ] **LoginPage (`src/pages/LoginPage.ts`):** Encapsulate selectors and actions for login, logout, password visibility, and error toasts.
 - [ ] **RegistrationPage (`src/pages/RegistrationPage.ts`):** Support multi-step onboarding, profile setup, and input validation.
 - [ ] **TokenPurchasePage (`src/pages/TokenPurchasePage.ts`):** Handle payment selection, package checkout, and mock card transactions.
 
 ### 2.3 High-Risk (P0) Test Suites
+
 - [ ] **Login Suite (`tests/e2e/auth/login.spec.ts`):**
   - `TC_LOG_001`: Valid login & session logout.
   - `TC_LOG_002`: Invalid credentials rejection & error messaging.
@@ -47,14 +50,21 @@ Focus on initializing the foundational Page Object Models (POM), dynamic API dat
 Automate core functional workflows while setting up boundaries for AI interaction.
 
 ### 3.1 Feature Page Objects
-- [ ] **EssayReviewPage (`src/pages/EssayReviewPage.ts`):** Document upload, proofread triggering, token deduction checks, and export actions.
-- [ ] **MentorBookingPage (`src/pages/MentorBookingPage.ts`):** Slot selection, timezone conversion, and appointment confirmations.
-- [ ] **TodoTrackerPage (`src/pages/TodoTrackerPage.ts`):** Scholarship task creation, inline edits, status toggles, and deletions.
+
+- [x] **EssayReviewPage (`src/pages/EssayReviewPage.ts`):** Document upload, proofread triggering, suggestion merging, and Word/PDF export actions.
+- [x] **MentorBookingPage (`src/pages/MentorBookingPage.ts`):** Mentor and slot selection, timezone selection, booking confirmations, and error assertions.
+- [x] **TodoTrackerPage (`src/pages/TodoTrackerPage.ts`):** Scholarship task creation, inline edits, completion toggles, deletion, and validation assertions.
+
+The page objects accept their route explicitly. Accessible labels and control names should be verified against the live application before validating the Phase 3.2 specs. Token deduction should be asserted through `AuthClient.me()` in the tests, keeping account state checks out of the page object.
 
 ### 3.2 Medium-Risk (P1) Test Suites
-- [ ] **Essay Review (`tests/e2e/features/essay.spec.ts`):** `TC_ESSY_001` – `TC_ESSY_004` (Proofread flow, zero-balance handling, context window limits, UTF-8 exports).
-- [ ] **Mentor Booking (`tests/e2e/features/booking.spec.ts`):** `TC_BNKR_001` – `TC_BNKR_003` (Appointment creation, API double-booking concurrency block, cross-timezone schedules).
-- [ ] **Scholarship To-Do (`tests/e2e/features/todo.spec.ts`):** `TC_TODO_001` – `TC_TODO_003` (Full task CUD lifecycle, empty input rejection, character length boundaries).
+
+- [x] **Essay Review (`tests/e2e/features/essay.spec.ts`):** `TC_ESSY_001` – `TC_ESSY_004` (Proofread flow, zero-balance handling, context window limits, UTF-8 exports).
+- [x] **Mentor Booking (`tests/e2e/features/booking.spec.ts`):** `TC_BNKR_001` – `TC_BNKR_003` (Appointment creation, concurrent double-booking block, cross-timezone schedules).
+- [x] **Scholarship To-Do (`tests/e2e/features/todo.spec.ts`):** `TC_TODO_001` – `TC_TODO_003` (Full task CUD lifecycle, empty input rejection, character length boundaries).
+
+The Phase 3.2 specs are authored but require an online backend and verification of feature-specific UI labels and responses before they can be considered integration-tested.
+
 - [ ] **Chatbot API Verification (`tests/api/chatbot.spec.ts`):** `TC_BOT_003` (Rapid message burst rate-limiting).
 
 ---
@@ -64,10 +74,14 @@ Automate core functional workflows while setting up boundaries for AI interactio
 Complete the automated coverage footprint across visual discovery and content navigation.
 
 ### 4.1 Discovery Page Objects
-- [ ] **ScholarshipSearchPage (`src/pages/ScholarshipSearchPage.ts`):** Filter accordions, dynamic suitability scores, and keyword inputs.
-- [ ] **WishlistPage (`src/pages/WishlistPage.ts`):** Bookmark toggles, list synchronization, and empty states.
+
+- [x] **ScholarshipSearchPage (`src/pages/ScholarshipSearchPage.ts`):** Filter accordions, dynamic suitability scores, and keyword inputs.
+- [x] **WishlistPage (`src/pages/WishlistPage.ts`):** Bookmark toggles, list synchronization, and empty states.
+
+The page objects use the `/scholarships` and `/wishlist` routes. Authenticated controls and accessible names should be verified against the live application before implementing Phase 4.2 tests.
 
 ### 4.2 Low-Risk (P2) Test Suites
+
 - [ ] **Filter & Search (`tests/e2e/discovery/search.spec.ts`):** `TC_DISC_001` – `TC_DISC_004` (Multi-criteria search, zero-results state, special characters, rapid checkbox toggling).
 - [ ] **Scholarship Detail & Wishlist (`tests/e2e/discovery/wishlist.spec.ts`):** `TC_PAGE_001` – `TC_PAGE_003` and `TC_WISH_001` – `TC_WISH_003` (Bookmark sync, 404 handling, external links, multi-tab sync).
 
